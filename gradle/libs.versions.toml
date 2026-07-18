@@ -1,65 +1,89 @@
 [versions]
 agp = "9.2.1"
+aboutLibraries = "14.2.1"
+coil = "3.4.0"
+core = "2.3.0"
 kotlin = "2.3.21"
 ksp = "2.3.6"
+composeMarkdown = "0.5.7"
 coreKtx = "1.19.0"
-activityCompose = "1.13.0"
+junit = "4.13.2"
+junitVersion = "1.3.0"
+koinAndroid = "4.2.1"
+koinAndroidxCompose = "4.2.1"
+espressoCore = "3.7.0"
+lazycolumnscrollbar = "2.2.0"
 lifecycleRuntimeKtx = "2.10.0"
+activityCompose = "1.13.0"
 composeBom = "2026.05.01"
-wearCompose = "1.5.0"
-wearToolingPreview = "1.0.0"
 kotlinxSerializationJson = "1.11.0"
 okhttp = "5.3.2"
-koinAndroid = "4.2.1"
+opencc4j = "1.14.0"
+reorderable = "3.1.0"
 datastorePreferences = "1.2.1"
+deviceCompat = "2.6"
 documentfile = "1.1.0"
 room = "2.8.4"
 work = "2.11.2"
+tinypinyin = "2.0.3"
+monitor = "1.8.0"
+miuix = "0.9.2"
+wearCompose = "1.5.0"
 shizuku = "13.1.5"
-coil = "3.4.0"
 
 [libraries]
+aboutlibraries-compose-core = { module = "com.mikepenz:aboutlibraries-compose-core", version.ref = "aboutLibraries" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+compose-destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "core" }
+compose-markdown = { module = "com.github.jeziellago:compose-markdown", version.ref = "composeMarkdown" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-# Wear Compose - 原生 Wear Material 3 组件
-androidx-wear-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "wearCompose" }
-androidx-wear-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "wearCompose" }
-androidx-wear-compose-navigation = { group = "androidx.wear.compose", name = "compose-navigation", version.ref = "wearCompose" }
-androidx-wear-tooling-preview = { group = "androidx.wear", name = "wear-tooling-preview", version.ref = "wearToolingPreview" }
-# Kotlinx Serialization
+compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "core" }
+lazycolumnscrollbar = { module = "com.github.nanihadesuka:LazyColumnScrollbar", version.ref = "lazycolumnscrollbar" }
+miuix-preference-android = { module = "top.yukonga.miuix.kmp:miuix-preference-android", version.ref = "miuix" }
+miuix-ui-android = { module = "top.yukonga.miuix.kmp:miuix-ui-android", version.ref = "miuix" }
+miuix-icons-android = { module = "top.yukonga.miuix.kmp:miuix-icons-android", version.ref = "miuix" }
+opencc4j = { module = "com.github.houbb:opencc4j", version.ref = "opencc4j" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
+tinypinyin = { module = "com.github.promeg:tinypinyin", version.ref = "tinypinyin" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-# Network
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
-# Koin DI
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroid" }
-# DataStore
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
+devicecompat = { module = "com.github.getActivity:DeviceCompat", version.ref = "deviceCompat" }
 androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
-# Room
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-# WorkManager
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
-# Shizuku - 用于无 root 访问系统文件
-shizuku-api = { group = "dev.rikka.shizuku", name = "api", version.ref = "shizuku" }
-shizuku-provider = { group = "dev.rikka.shizuku", name = "provider", version.ref = "shizuku" }
-# Coil 图片加载
-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
-# Testing
-junit = { group = "junit", name = "junit", version = "4.13.2" }
+androidx-monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
+# WearOS Compose - 原生 Wear Material 3 组件（手表文件选择器用）
+androidx-wear-compose-material = { group = "androidx.wear", name = "compose-material", version.ref = "wearCompose" }
+androidx-wear-compose-foundation = { group = "androidx.wear", name = "compose-foundation", version.ref = "wearCompose" }
+androidx-wear-compose-navigation = { group = "androidx.wear", name = "compose-navigation", version.ref = "wearCompose" }
+androidx-wear-tooling-preview = { group = "androidx.wear", name = "wear-tooling-preview", version.ref = "wearCompose" }
+# Shizuku - 无 root 访问系统文件（替代 DocumentsUI）
+shizuku-api = { module = "dev.rikka.shizuku:api", version.ref = "shizuku" }
+shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizuku" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+aboutLibraries = {id = "com.mikepenz.aboutlibraries.plugin.android", version.ref = "aboutLibraries"}
