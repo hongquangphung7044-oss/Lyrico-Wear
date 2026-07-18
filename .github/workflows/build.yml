@@ -147,7 +147,12 @@ jobs:
 
       - name: 📝 写入 NDK 路径到 gradle.properties
         run: |
+          # 确保 gradle.properties 末尾有换行符，避免追加时和上一行粘连
+          # （之前因末尾无换行导致 android.nonTransitiveRClass=true 和 android.ndk.path=... 粘在一起）
+          [ -n "$(tail -c1 gradle.properties)" ] && echo "" >> gradle.properties
           echo "android.ndk.path=${{ steps.setup_ndk.outputs.ndk-path }}" >> gradle.properties
+          echo "─── gradle.properties 末尾 ───"
+          tail -5 gradle.properties
 
       # ── 7. 赋予 gradlew 执行权限 ─────────────────────────────────────────────
       - name: 🔐 赋予 gradlew 执行权限
