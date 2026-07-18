@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.lonx.lyrico.wear"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.lonx.lyrico.wear"
         minSdk = 30          // WearOS 3+
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
         vectorDrawables { useSupportLibrary = true }
@@ -32,13 +32,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     kotlin {
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
         }
     }
 
@@ -100,9 +100,4 @@ dependencies {
 
     // Testing
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
