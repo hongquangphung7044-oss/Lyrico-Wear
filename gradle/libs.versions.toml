@@ -72,10 +72,11 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
 androidx-monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 # WearOS Compose - 原生 Wear Material 3 组件（手表文件选择器用）
-androidx-wear-compose-material = { group = "androidx.wear", name = "compose-material", version.ref = "wearCompose" }
-androidx-wear-compose-foundation = { group = "androidx.wear", name = "compose-foundation", version.ref = "wearCompose" }
-androidx-wear-compose-navigation = { group = "androidx.wear", name = "compose-navigation", version.ref = "wearCompose" }
-androidx-wear-tooling-preview = { group = "androidx.wear", name = "wear-tooling-preview", version.ref = "wearCompose" }
+# 注意：groupId 是 androidx.wear.compose（不是 androidx.wear）
+androidx-wear-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "wearCompose" }
+androidx-wear-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "wearCompose" }
+androidx-wear-compose-navigation = { group = "androidx.wear.compose", name = "compose-navigation", version.ref = "wearCompose" }
+androidx-wear-tooling-preview = { group = "androidx.wear.compose", name = "compose-ui-tooling", version.ref = "wearCompose" }
 # Shizuku - 无 root 访问系统文件（替代 DocumentsUI）
 shizuku-api = { module = "dev.rikka.shizuku:api", version.ref = "shizuku" }
 shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizuku" }
