@@ -1,0 +1,84 @@
+# ============================================================================
+# Lyrico-Wear 构建工作流
+#
+# 作用：构建 WearOS 版 Lyrico APK（内置文件管理器 + Shizuku 授权）
+#
+# 触发方式：
+#   1. push 到 master：改了代码自动构建
+#   2. workflow_dispatch：手动在 Actions 页面运行
+#
+# 产出物：
+#   - Lyrico-Wear-debug.apk（WearOS 3+ 通用 APK）
+# ============================================================================
+name: 🏗️ 构建 WearOS APK
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'app/**'
+      - 'gradle/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'gradle.properties'
+      - 'gradlew'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: build-wear-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: 构建 WearOS APK
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. 检出源码 ──────────────────────────────────────────────────────
+      - name: 📥 检出源码
+        uses: actions/checkout@v4
+
+      # ── 2. 设置 JDK 17 ───────────────────────────────────────────────────
+      - name: ☕ 设置 JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      # ── 3. 赋予 gradlew 执行权限 ─────────────────────────────────────────
+      - name: 🔐 赋予 gradlew 执行权限
+        run: chmod +x gradlew
+
+      # ── 4. 配置 Gradle ───────────────────────────────────────────────────
+      - name: 🐘 配置 Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # ── 5. 构建 Debug APK ────────────────────────────────────────────────
+      - name: 🛠️ 构建 Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      # ── 6. 上传 APK ──────────────────────────────────────────────────────
+      - name: 📤 上传 APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lyrico-Wear-debug
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 30
+          if-no-files-found: error
+
+# ============================================================================
+# 【构建失败排查】
+#
+# 1. Gradle 编译错误：
+#    → 看日志中的 --stacktrace 输出
+#    → 常见原因：依赖版本不兼容、API 变更
+#
+# 2. Shizuku 依赖找不到：
+#    → 确认 jitpack 仓库在 settings.gradle.kts 中配置正确
+#
+# 3. Wear Compose API 找不到：
+#    → 检查 libs.versions.toml 中的 wearCompose 版本
+#    → 确认 app/build.gradle.kts 引用了正确的依赖
+# ============================================================================
