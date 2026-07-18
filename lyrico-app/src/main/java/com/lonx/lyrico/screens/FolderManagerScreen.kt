@@ -96,9 +96,7 @@ import top.yukonga.miuix.kmp.basic.SmallTopAppBar
 import top.yukonga.miuix.kmp.basic.TabRowWithContour
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
-import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.extended.Add
 import top.yukonga.miuix.kmp.icon.extended.AddFolder
 import top.yukonga.miuix.kmp.icon.extended.Back
 import top.yukonga.miuix.kmp.icon.extended.More
@@ -108,7 +106,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 import top.yukonga.miuix.kmp.window.WindowDialog
-import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,7 +158,6 @@ fun FolderManagerScreen(
     var showDetailSheet by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showRenameDialog by remember { mutableStateOf(false) }
-    var showAddPathDialog by remember { mutableStateOf(false) }
 
     val selectedFolder = remember(selectedFolderId, folders) {
         folders.find { it.id == selectedFolderId }
@@ -309,16 +305,6 @@ fun FolderManagerScreen(
                                     ) {
                                         Icon(
                                             imageVector = MiuixIcons.AddFolder,
-                                            contentDescription = null
-                                        )
-                                    }
-
-                                    // 按路径添加：绕过 SAF，需 MANAGE_EXTERNAL_STORAGE 权限
-                                    IconButton(
-                                        onClick = { showAddPathDialog = true }
-                                    ) {
-                                        Icon(
-                                            imageVector = MiuixIcons.Add,
                                             contentDescription = null
                                         )
                                     }
@@ -560,12 +546,6 @@ fun FolderManagerScreen(
             onBatchDelete = selectionViewModel::batchDelete,
             onBatchShare = selectionViewModel::batchShare
         )
-
-        AddPathDialog(
-            show = showAddPathDialog,
-            viewModel = viewModel,
-            onDismiss = { showAddPathDialog = false }
-        )
     }
 
     // ── WearOS 内置文件选择器（替代系统 OpenDocumentTree）──────────────────────
@@ -588,96 +568,6 @@ fun FolderManagerScreen(
                 },
                 onBack = { showFilePicker = false }
             )
-        }
-    }
-}
-
-@Composable
-private fun AddPathDialog(
-    show: Boolean,
-    viewModel: FolderManagerViewModel,
-    onDismiss: () -> Unit
-) {
-    if (!show) return
-
-    var path by remember { mutableStateOf("") }
-    var error by remember { mutableStateOf<String?>(null) }
-    val hasPermission = remember(show) { viewModel.hasManageExternalStoragePermission() }
-    val context = LocalContext.current
-
-    WindowDialog(
-        show = show,
-        title = stringResource(R.string.folder_add_path_title),
-        onDismissRequest = onDismiss
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = stringResource(R.string.folder_add_path_message),
-                style = MiuixTheme.textStyles.footnote1,
-                color = MiuixTheme.colorScheme.onSurfaceVariantSummary
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            TextField(
-                value = path,
-                onValueChange = {
-                    path = it
-                    error = null
-                },
-                label = stringResource(R.string.folder_add_path_hint),
-                modifier = Modifier.fillMaxWidth()
-            )
-            if (error != null) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = error!!,
-                    style = MiuixTheme.textStyles.footnote1,
-                    color = MiuixTheme.colorScheme.error
-                )
-            }
-            if (!hasPermission) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = stringResource(R.string.folder_add_path_no_permission),
-                    style = MiuixTheme.textStyles.footnote1,
-                    color = MiuixTheme.colorScheme.error
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                TextButton(
-                    text = stringResource(R.string.folder_add_path_grant_permission),
-                    onClick = { viewModel.openManageExternalStorageSettings() },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.textButtonColorsPrimary()
-                )
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                TextButton(
-                    text = stringResource(R.string.cancel),
-                    onClick = onDismiss,
-                    modifier = Modifier.weight(1f)
-                )
-                Spacer(Modifier.width(20.dp))
-                TextButton(
-                    text = stringResource(R.string.confirm),
-                    onClick = {
-                        val trimmed = path.trim()
-                        when {
-                            trimmed.isEmpty() -> {
-                                error = context.getString(R.string.folder_add_path_empty)
-                            }
-                            !File(trimmed).exists() || !File(trimmed).isDirectory -> {
-                                error = context.getString(R.string.folder_add_path_invalid)
-                            }
-                            else -> {
-                                viewModel.addFolderByPath(trimmed)
-                                onDismiss()
-                            }
-                        }
-                    },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.textButtonColorsPrimary()
-                )
-            }
         }
     }
 }

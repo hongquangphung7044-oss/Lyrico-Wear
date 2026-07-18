@@ -254,20 +254,32 @@ interface FolderDao {
     suspend fun refreshSongCount(folderId: Long, updateTime: Long = System.currentTimeMillis())
 
     /**
-     * 只有同时满足以下三个条件的文件夹才会被自动删除：
+     * 只有同时满足以下条件的文件夹才会被自动删除：
      * 1. 里面没歌 (songCount == 0)
      * 2. 用户没有手动忽略它 (isIgnored == 0)
      * 3. 不是用户手动通过选择器添加的 (addedBySaf == 0)
+     * 4. 没有子文件夹
+     * 5. 自身是某个已存在文件夹的子目录（即扫描时自动发现的中间节点）
+     *
+     * 第 5 条是 WearOS 适配：用户通过内置文件选择器手动添加的根目录
+     * （如 /sdcard/Music）不会被误删，即使扫描未找到歌曲或暂时无权访问。
+     * 只有扫描过程中自动发现的子目录（如 /sdcard/Music/Album1）才会在空时被清理。
      */
     @Query("""
-        DELETE FROM folders 
-        WHERE songCount = 0 
-          AND isIgnored = 0 
+        DELETE FROM folders
+        WHERE songCount = 0
+          AND isIgnored = 0
           AND addedBySaf = 0
           AND NOT EXISTS (
               SELECT 1
               FROM folders AS child
               WHERE child.path LIKE folders.path || '/%'
+          )
+          AND EXISTS (
+              SELECT 1
+              FROM folders AS parent
+              WHERE parent.id != folders.id
+                AND folders.path LIKE parent.path || '/%'
           )
     """)
     suspend fun deleteEmptyFolders()

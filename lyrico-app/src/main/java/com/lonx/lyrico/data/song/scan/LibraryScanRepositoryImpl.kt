@@ -181,7 +181,10 @@ class LibraryScanRepositoryImpl(
                 }
             }
 
-            val missingSafFolderIds = allMissingFolderIds
+            // WearOS 适配：只删除 SAF 缺失的文件夹树，保留用户手动添加的非 SAF 文件夹。
+            // 非 SAF 文件夹可能只是暂时不可访问（如存储未挂载、权限未授予），
+            // 永久删除会导致用户需要重新通过文件选择器添加，体验很差。
+            val missingFolderIdsToDelete = safScanResult.missingFolderIds
             val successfulScannedFolderIds = folderDao
                 .getFolderTreeIds(allSuccessfulFolderIds)
                 .toSet()
@@ -199,7 +202,7 @@ class LibraryScanRepositoryImpl(
             val missingFolderSongUris = dbSyncInfos
                 .filter { info ->
                     (info.source == "SAF" || info.source == "FILE") &&
-                        info.folderId in missingSafFolderIds
+                        info.folderId in allMissingFolderIds
                 }
                 .map { it.uri }
                 .toSet()
@@ -212,9 +215,9 @@ class LibraryScanRepositoryImpl(
                         .map { it.folderId }
                 )
             }
-            impactedFolderIds.addAll(missingSafFolderIds)
+            impactedFolderIds.addAll(allMissingFolderIds)
 
-            val databaseChanges = songsToUpsert.size + allDeletedUris.size + missingSafFolderIds.size
+            val databaseChanges = songsToUpsert.size + allDeletedUris.size + missingFolderIdsToDelete.size
             onProgress(
                 LibraryScanProgress(
                     stage = LibraryScanStage.WRITING_DATABASE,
@@ -244,12 +247,12 @@ class LibraryScanRepositoryImpl(
                     database.songCustomTagKeyDao().deleteForSongs(chunk.toList())
                 }
 
-                missingSafFolderIds.forEach { folderId ->
+                missingFolderIdsToDelete.forEach { folderId ->
                     folderDao.deleteFolderTreePermanently(folderId)
                 }
 
                 impactedFolderIds
-                    .filterNot { it in missingSafFolderIds }
+                    .filterNot { it in missingFolderIdsToDelete }
                     .forEach { folderId -> folderDao.refreshSongCount(folderId) }
 
                 folderDao.performPostScanCleanup()
@@ -259,7 +262,7 @@ class LibraryScanRepositoryImpl(
                 val indexedSongs = songDao.getSongsByUris(songsToUpsert.map { it.entity.uri })
                 libraryIndexRepository.reindexSongs(indexedSongs)
             }
-            if (allDeletedUris.isNotEmpty() || missingSafFolderIds.isNotEmpty()) {
+            if (allDeletedUris.isNotEmpty() || allMissingFolderIds.isNotEmpty()) {
                 libraryIndexRepository.refreshAndPruneIndexes()
             }
 
