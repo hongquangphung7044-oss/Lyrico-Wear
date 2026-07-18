@@ -77,6 +77,14 @@ jobs:
             rm -rf lyrico-audiotag/src/main/cpp/taglib
             git clone --depth 1 https://github.com/taglib/taglib.git lyrico-audiotag/src/main/cpp/taglib
           fi
+          echo "─── 克隆 taglib 的嵌套子模块 utfcpp（CMake 构建必需）───"
+          # taglib 的 CMakeLists.txt 在 3rdparty/utfcpp 目录找不到时会 FATAL_ERROR
+          # 必须初始化 taglib 自己的子模块
+          cd lyrico-audiotag/src/main/cpp/taglib
+          # 看 taglib 的 .gitmodules 确认子模块路径
+          cat .gitmodules 2>/dev/null || echo "(no .gitmodules in taglib)"
+          git submodule update --init --recursive --depth 1
+          cd -
           echo "─── 克隆 quickjs-ng ───"
           if [ ! -d "lyrico-app/src/main/cpp/quickjs-ng/.git" ]; then
             rm -rf lyrico-app/src/main/cpp/quickjs-ng
@@ -84,6 +92,7 @@ jobs:
           fi
           echo "─── 验证子模块 ───"
           ls lyrico-audiotag/src/main/cpp/taglib/CMakeLists.txt
+          ls lyrico-audiotag/src/main/cpp/taglib/3rdparty/utfcpp/CMakeLists.txt 2>/dev/null || echo "(utfcpp not at 3rdparty/utfcpp - will rely on find_path)"
           ls lyrico-app/src/main/cpp/quickjs-ng/CMakeLists.txt
           echo "✅ 子模块已就绪"
 
